@@ -186,7 +186,7 @@ int main()
         Display *display;
         Window root;
         Screen* screen;
-        double xSpeed=150,ySpeed=150;
+        double xSpeed=20000,ySpeed=20000;
         int dCenterMsk = 1;
         double poseX_,poseX,poseY_,poseY,dPoseX,dPoseY;
         int mouseX,mouseY;
@@ -194,16 +194,21 @@ int main()
         unsigned int mask;
         Window ret_child;
         Window ret_root;
+        int centerX,centerY;
+        int initX,initY;
+        int xOffset,yOffset;
+        int j=0;
 
+        xOffset=0,yOffset=0;
         poseX_=0,poseX=0;
         poseY_=0,poseY=0;
-        //display = XOpenDisplay(0);
-        //screen = DefaultScreenOfDisplay(display);
-        //root = DefaultRootWindow(display);
-        //XQueryPointer(display, root, &ret_root, &ret_child, &poseX_, &poseY_,
-                //&win_x, &win_y, &mask);
-        //XFlush(display);
-        //XCloseDisplay(display);
+        display = XOpenDisplay(0);
+        screen = DefaultScreenOfDisplay(display);
+        root = DefaultRootWindow(display);
+        centerX = WidthOfScreen(screen) / 2;
+        centerY = HeightOfScreen(screen) / 2;
+        initX = centerX;
+        initY = centerY;
 
         cv::VideoCapture cap(0);
         if (!cap.isOpened())
@@ -222,10 +227,6 @@ int main()
         // Grab and process frames until the main window is closed by the user.
         while(!win.is_closed())
         {
-            display = XOpenDisplay(0);
-            screen = DefaultScreenOfDisplay(display);
-            root = DefaultRootWindow(display);
-
             float opticalPoseX,opticalPoseY;
             // Grab a frame
             cv::Mat temp;
@@ -233,12 +234,7 @@ int main()
 
             opticalPoseX = temp.cols / 2;
             opticalPoseY = temp.rows / 2;
-            // Turn OpenCV's Mat into something dlib can deal with.  Note that this just
-            // wraps the Mat object, it doesn't copy anything.  So cimg is only valid as
-            // long as temp is valid.  Also don't do anything to temp that would cause it
-            // to reallocate the memory which stores the image as that will make cimg
-            // contain dangling pointers.  This basically means you shouldn't modify temp
-            // while using cimg.
+
             cv_image<bgr_pixel> cimg(temp);
 
             // Detect faces
@@ -257,13 +253,22 @@ int main()
                 poseY_ = headPose(1,3)*100;
                 dPoseX = -(poseX_ - poseX);
                 dPoseY = (poseY_ - poseY);
-                root = XDefaultRootWindow(display);
                 XQueryPointer(display, root, &ret_root, &ret_child, &mouseX, &mouseY,
                         &win_x, &win_y, &mask);
+                printf("centerx: %i\ncentery: %i\n",centerX,centerY);
                 mouseX = mouseX + dPoseX*xSpeed;
                 mouseY = mouseY + dPoseY*ySpeed;
+                if(j==5) {
+                    xOffset = xSpeed*headPose(0,3);
+                    printf("xoffset: %i\n",xOffset);
+                    yOffset = ySpeed*headPose(1,3);
+                    printf("yoffset: %i\n",yOffset);
+                }
+                mouseX = (centerX+xOffset) - xSpeed*headPose(0,3);
+                mouseY = (centerY-yOffset) + ySpeed*headPose(1,3);
                 XWarpPointer(display, None, root, 0, 0, 0, 0, mouseX, mouseY);
                 XFlush(display);
+                j++;
             }
 
 
