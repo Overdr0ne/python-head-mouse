@@ -1,0 +1,24 @@
+Head Mouse
+
+This program uses a webcam with opencv and dlib to detect the users head pose
+in real time, and maps the mouse proportionally.
+
+Requirements:
+*dlib
+*opencv
+*facial landmarks
+	http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
+
+Build:
+mkdir build
+cd build
+cmake-gui ..
+make
+make install
+
+Run:
+webcam_head_mouse --model shape_predictor_68_face_landmarks.dat
+
+Contribution:
+I based this code on the dlib example webcam_face_pose_ex.cpp combined with
+https://github.com/severin-lemaignan/gazr
