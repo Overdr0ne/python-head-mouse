@@ -17,6 +17,6 @@ if(${OpenCV_VERSION} VERSION_GREATER 2.9.0)
     add_definitions(-DOPENCV3)
 endif()
 
-ADD_EXECUTABLE(webcam_face_pose_ex webcam_face_pose_ex.cpp)
+ADD_EXECUTABLE(webcam_head_mouse webcam_head_mouse.cpp)
 
-TARGET_LINK_LIBRARIES(webcam_face_pose_ex ${dlib_LIBRARIES} ${OpenCV_LIBS})
+TARGET_LINK_LIBRARIES(webcam_head_mouse ${dlib_LIBRARIES} ${OpenCV_LIBS})
