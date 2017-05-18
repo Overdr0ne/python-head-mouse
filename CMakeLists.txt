@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.12)
 
 PROJECT(head-pose)
 
-SET(GCC_COVERAGE_LINK_FLAGS "-lX11 -mavx")
+SET(GCC_COVERAGE_LINK_FLAGS "-lX11")
 SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}" )
 
 find_package( OpenCV REQUIRED )
@@ -49,8 +49,7 @@ endif()
 set(gcc_like_compilers GNU Clang  Intel)
 set(intel_archs x86_64 i386 i686)
 
-
-# Setup some options to allow a user to enable SSE and AVX instruction use.  
+# Setup some options to allow a user to enable SSE and AVX instruction use.
 if ((";${gcc_like_compilers};" MATCHES ";${CMAKE_CXX_COMPILER_ID};")  AND
     (";${intel_archs};"        MATCHES ";${CMAKE_SYSTEM_PROCESSOR};") AND NOT USE_AUTO_VECTOR)
     option(USE_SSE2_INSTRUCTIONS "Compile your program with SSE2 instructions" OFF)
