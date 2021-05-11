@@ -148,11 +148,11 @@ HeadPose HeadMouse::pose(full_object_detection &shape, float opticalPoseX, float
     cv::solvePnP(head_points, detected_points,
             projection, cv::noArray(),
             rvec, tvec, true,
-#ifdef OPENCV3
+//#ifdef OPENCV3
             cv::SOLVEPNP_ITERATIVE);
-#else
-            cv::ITERATIVE);
-#endif
+//#else
+            //cv::ITERATIVE);
+//#endif
 
     cv::Matx33d rotation;
     Rodrigues(rvec, rotation);
