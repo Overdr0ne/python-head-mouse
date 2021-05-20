@@ -35,29 +35,38 @@
 #   via the command:
 #       pip install numpy
 
-import sys
 import dlib
 import cv2
-from io import BytesIO
+from imutils import face_utils
 
 detector = dlib.get_frontal_face_detector()
-pose_model = dlib.shape_predictor()
 fileName = "shape_predictor_68_face_landmarks.dat"
-# dat = open(fileName,'r')
-buf = BytesIO()
-with open(fileName, mode='rb') as file: # b is important -> binary
-    dat = file.read()
-pose_model = dlib.matrix()
-pose_model.deserialize("shape_predictor_68_face_landmarks.dat");
+poseModel = dlib.shape_predictor(fileName)
 cam = cv2.VideoCapture(0)
 color_green = (0,255,0)
 line_width = 3
 while True:
     ret_val, img = cam.read()
     rgb_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    dets = detector(rgb_image)
-    for det in dets:
-        cv2.rectangle(img,(det.left(), det.top()), (det.right(), det.bottom()), color_green, line_width)
+
+    dets = detector(img, 1)
+    num_faces = len(dets)
+    # if num_faces == 0:
+    #     print("Sorry, there were no faces found.")
+    #     exit()
+
+    faces = dlib.full_object_detections()
+    for detection in dets:
+        faces.append(poseModel(img, detection))
+
+    for face in faces:
+        point = face.part(33)
+        cv2.circle(img, (point.x, point.y), radius=1, color=color_green, thickness=2)
+        # rect = face.rect
+        # cv2.rectangle(img,(rect.left(), rect.top()), (rect.right(), rect.bottom()), color_green, line_width)
+        # for idx in face_utils.FACIAL_LANDMARKS_68_IDXS['nose']:
+        #     point = face.part(idx)
+        #     cv2.circle(img, (point.x, point.y), radius=1, color=color_green, thickness=2)
     cv2.imshow('my webcam', img)
     if cv2.waitKey(1) == 27:
         break  # esc to quit
