@@ -43,7 +43,7 @@ detector = dlib.get_frontal_face_detector()
 fileName = "shape_predictor_68_face_landmarks.dat"
 poseModel = dlib.shape_predictor(fileName)
 cam = cv2.VideoCapture(0)
-color_green = (0,255,0)
+color_green = (0, 255, 0)
 line_width = 3
 while True:
     ret_val, img = cam.read()
@@ -52,9 +52,6 @@ while True:
 
     dets = detector(gray, 0)
     num_faces = len(dets)
-    # if num_faces == 0:
-    #     print("Sorry, there were no faces found.")
-    #     exit()
 
     faces = dlib.full_object_detections()
     for detection in dets:
@@ -63,11 +60,7 @@ while True:
     for face in faces:
         point = face.part(33)
         cv2.circle(img, (point.x, point.y), radius=1, color=color_green, thickness=2)
-        # rect = face.rect
-        # cv2.rectangle(img,(rect.left(), rect.top()), (rect.right(), rect.bottom()), color_green, line_width)
-        # for idx in face_utils.FACIAL_LANDMARKS_68_IDXS['nose']:
-        #     point = face.part(idx)
-        #     cv2.circle(img, (point.x, point.y), radius=1, color=color_green, thickness=2)
+
     cv2.imshow('my webcam', img)
     if cv2.waitKey(1) == 27:
         break  # esc to quit
