@@ -47,7 +47,8 @@ color_green = (0,255,0)
 line_width = 3
 while True:
     ret_val, img = cam.read()
-    rgb_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.resize(gray, (640, 480))
 
     dets = detector(gray, 0)
     num_faces = len(dets)
