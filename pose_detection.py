@@ -49,7 +49,7 @@ while True:
     ret_val, img = cam.read()
     rgb_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    dets = detector(img, 1)
+    dets = detector(gray, 0)
     num_faces = len(dets)
     # if num_faces == 0:
     #     print("Sorry, there were no faces found.")
